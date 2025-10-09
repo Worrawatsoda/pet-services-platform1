@@ -295,3 +295,6 @@ export const mockPetChaperones: PetChaperone[] = [
       "Affordable and gentle pet transport service. Perfect for routine vet visits and grooming appointments.",
   },
 ]
+
+export const veterinaryClinics = mockVeterinaryClinics
+export const chaperones = mockPetChaperones

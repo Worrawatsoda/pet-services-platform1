@@ -1,22 +1,46 @@
+"use client"
+
+import type React from "react"
+
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Star, MapPin, Phone, Clock, CheckCircle2 } from "lucide-react"
+import { Star, MapPin, Phone, Clock, CheckCircle2, Heart } from "lucide-react"
 import type { VeterinaryClinic } from "@/lib/mock-data"
 import Image from "next/image"
+import { useAuth } from "@/lib/auth-context"
 
 interface VeterinaryCardProps {
   clinic: VeterinaryClinic
 }
 
 export function VeterinaryCard({ clinic }: VeterinaryCardProps) {
+  const { user, toggleFavoriteVet } = useAuth()
+  const isFavorite = user?.favoriteVets?.includes(clinic.id) || false
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    toggleFavoriteVet(clinic.id)
+  }
+
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
       <div className="relative h-48 w-full bg-muted">
         <Image src={clinic.image || "/placeholder.svg"} alt={clinic.name} fill className="object-cover" />
         {clinic.emergency24_7 && (
           <Badge className="absolute top-3 right-3 bg-accent text-accent-foreground">24/7 Emergency</Badge>
+        )}
+        {user && user.userType === "pet-owner" && (
+          <Button
+            size="icon"
+            variant="secondary"
+            className="absolute top-3 left-3 h-9 w-9 rounded-full shadow-md hover:scale-110 transition-transform"
+            onClick={handleFavoriteClick}
+          >
+            <Heart className={`h-5 w-5 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
+          </Button>
         )}
       </div>
 

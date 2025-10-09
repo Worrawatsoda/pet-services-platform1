@@ -1,16 +1,30 @@
+"use client"
+
+import type React from "react"
+
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Star, MapPin, Clock, Shield, Car } from "lucide-react"
+import { Star, MapPin, Clock, Shield, Car, Heart } from "lucide-react"
 import type { PetChaperone } from "@/lib/mock-data"
 import Image from "next/image"
+import { useAuth } from "@/lib/auth-context"
 
 interface ChaperoneCardProps {
   chaperone: PetChaperone
 }
 
 export function ChaperoneCard({ chaperone }: ChaperoneCardProps) {
+  const { user, toggleFavoriteChaperone } = useAuth()
+  const isFavorite = user?.favoriteChaperones?.includes(chaperone.id) || false
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    toggleFavoriteChaperone(chaperone.id)
+  }
+
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
       <div className="relative h-48 w-full bg-muted">
@@ -24,6 +38,16 @@ export function ChaperoneCard({ chaperone }: ChaperoneCardProps) {
           {chaperone.licensed && <Badge className="bg-primary text-primary-foreground">Licensed</Badge>}
           {chaperone.insured && <Badge className="bg-accent text-accent-foreground">Insured</Badge>}
         </div>
+        {user && user.userType === "pet-owner" && (
+          <Button
+            size="icon"
+            variant="secondary"
+            className="absolute top-3 left-3 h-9 w-9 rounded-full shadow-md hover:scale-110 transition-transform"
+            onClick={handleFavoriteClick}
+          >
+            <Heart className={`h-5 w-5 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
+          </Button>
+        )}
       </div>
 
       <CardContent className="p-6">

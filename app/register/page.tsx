@@ -10,9 +10,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { useAuth } from "@/lib/auth-context"
 import { Loader2 } from "lucide-react"
+import { useAuth } from "@/lib/auth-context"
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -20,7 +19,6 @@ export default function RegisterPage() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [userType, setUserType] = useState<"pet-owner" | "provider">("pet-owner")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
 
@@ -30,7 +28,7 @@ export default function RegisterPage() {
     setIsLoading(true)
 
     try {
-      const success = await register({ name, email, password, userType })
+      const success = await register({ name, email, password })
       if (success) {
         router.push("/profile")
       } else {
@@ -51,7 +49,7 @@ export default function RegisterPage() {
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
-            <CardDescription>Enter your information to get started</CardDescription>
+            <CardDescription>Join our pet care community</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -93,24 +91,6 @@ export default function RegisterPage() {
                   disabled={isLoading}
                   minLength={6}
                 />
-              </div>
-
-              <div className="space-y-2">
-                <Label>I am a...</Label>
-                <RadioGroup value={userType} onValueChange={(value) => setUserType(value as "pet-owner" | "provider")}>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="pet-owner" id="pet-owner" />
-                    <Label htmlFor="pet-owner" className="font-normal cursor-pointer">
-                      Pet Owner
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="provider" id="provider" />
-                    <Label htmlFor="provider" className="font-normal cursor-pointer">
-                      Service Provider (Vet/Transport)
-                    </Label>
-                  </div>
-                </RadioGroup>
               </div>
 
               {error && <p className="text-sm text-destructive">{error}</p>}
